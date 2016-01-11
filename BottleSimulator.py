@@ -3,7 +3,7 @@ import time
 
 class BottleSimulator:
 
-    def __init__(self,x,y,scale):
+    def __init__(self,x,y,scale=4):
         self.array = (x*y - (y-y%2)/2)*[2*[0]]
         self.x = x
         self.y = y
@@ -26,6 +26,6 @@ class BottleSimulator:
         pygame.display.update()
 
     def send(self,i,r,g,b):
-        pygame.draw.circle(self.screen,(r,g,b),(self.array[i][0],self.array[i][1]),8*self.scale,0)
+        pygame.draw.circle(self.screen,,b),(self.array[i][0],self.array[i][1]),8*self.scale,0)
         pygame.display.update()
 
