@@ -19,7 +19,7 @@ class BottleSimulator(threading.Thread):
                           self.screen.get_height() // self.rows // 2))
 
         # odd lines are missing 1 bottle
-        odd = (rows - rows % 2) / 2
+        odd = rows // 2
         self.bottles = [self.black] * ((rows*cols)-odd)
         self.bottles_next = [self.black] * ((rows*cols)-odd)
 
@@ -66,6 +66,9 @@ class BottleSimulator(threading.Thread):
     def draw_bottle_xy(self, x, y, color, border=5, exc=True, commit=True):
         if exc and not 0 <= self.xy_to_i(x, y) < self.index_count:
             raise IndexError('No such bottle: (%d,%d)' % (x, y))
+
+        if x == self.cols-1 and y % 2:
+            commit = False
 
         pos_x = self.radius + x*self.radius*2
         # bottles should "lay" on each other
