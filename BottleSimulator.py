@@ -1,15 +1,18 @@
 import pygame
+import threading
 
 
-class BottleSimulator(object):
+class BottleSimulator(threading.Thread):
     white = (255, 255, 255)
     black = (0, 0, 0)
 
     def __init__(self, cols, rows, resolution=(800, 600)):
+        threading.Thread.__init__(self)
         self.cols = cols
         self.rows = rows
 
         self.screen = pygame.display.set_mode(resolution)
+        self.clock = pygame.time.Clock()
 
         # radius is calculated relative to rows/columns
         self.radius = min((self.screen.get_width() // self.cols // 2,
@@ -65,4 +68,8 @@ class BottleSimulator(object):
         pygame.draw.circle(self.screen, color, (pos_x, pos_y),
                            self.radius-border*2)
 
-        pygame.display.update()
+    def run(self):
+        self.running = True
+        self.draw_bottles(all=True)
+        while self.running:
+            self.clock.tick(10)
