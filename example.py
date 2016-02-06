@@ -1,7 +1,7 @@
 from BottleSimulator import BottleSimulator
 import time
 
-c = BottleSimulator(7, 5)
+c = BottleSimulator(7, 5, bottle_type="hexagon")
 c.draw_bottles()
 
 for i in range(11):

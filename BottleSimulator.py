@@ -1,22 +1,26 @@
 import pygame
 import threading
+import math
 
 
 class BottleSimulator(threading.Thread):
     white = (255, 255, 255)
     black = (0, 0, 0)
 
-    def __init__(self, cols, rows, resolution=(800, 600)):
+    def __init__(self, cols, rows, resolution=(800, 600), bottle_type="circle"):
         threading.Thread.__init__(self)
         self.cols = cols
         self.rows = rows
+        self.offset = 1.7005
+        self.bottle_type = bottle_type
 
         self.screen = pygame.display.set_mode(resolution)
         self.clock = pygame.time.Clock()
 
         # radius is calculated relative to rows/columns
-        self.radius = min((self.screen.get_width() // self.cols // 2,
-                          self.screen.get_height() // self.rows // 2))
+        # magic
+        self.radius = (int) (min(self.screen.get_width() / self.cols / 2,
+                    self.screen.get_height() / ((self.rows-1) * self.offset + 2)))
 
         # odd lines are missing 1 bottle
         odd = rows // 2
@@ -35,6 +39,16 @@ class BottleSimulator(threading.Thread):
             return self.xy_to_i(self.cols-1, self.rows-1) + 2
 
         return self.xy_to_i(self.cols-1, self.rows-1) + 1
+
+    def poligon_positions(self, pos_x, pos_y):
+        pos = [[pos_x, pos_y+self.radius],
+            [pos_x+self.radius, pos_y+1.155/2*self.radius],
+            [pos_x+self.radius, pos_y-1.155/2*self.radius],
+            [pos_x, pos_y-self.radius],
+            [pos_x-self.radius, pos_y-1.155/2*self.radius],
+            [pos_x-self.radius, pos_y+1.155/2*self.radius]
+            ]
+        return pos
 
     def i_to_xy(self, i):
         # compensate for odd lines missing 1 bottle
@@ -76,7 +90,7 @@ class BottleSimulator(threading.Thread):
 
         pos_x = self.radius + x*self.radius*2
         # bottles should "lay" on each other
-        pos_y = self.radius + y*self.radius*2 - y*15
+        pos_y = (int)(self.radius + y*self.radius * self.offset)
 
         # odd rows have one bottle less than even rows
         if y % 2 != 0:
@@ -87,11 +101,18 @@ class BottleSimulator(threading.Thread):
             i = self.xy_to_i(x, y)
             self.bottles[i] = color
             # draw border
-            pygame.draw.circle(self.screen, self.black, (pos_x, pos_y),
-                               self.radius)
-            # draw bottle bottom
-            pygame.draw.circle(self.screen, color, (pos_x, pos_y),
-                               self.radius-border*2)
+            if self.bottle_type == "circle":
+                pygame.draw.circle(self.screen, self.black, (pos_x, pos_y),
+                                self.radius)
+                # draw bottle bottom
+                pygame.draw.circle(self.screen, color, (pos_x, pos_y),
+                                self.radius-border*2)
+            elif self.bottle_type == "hexagon":
+                pygame.draw.polygon(self.screen, (255,0,0),
+                                self.poligon_positions(pos_x,pos_y), 3)
+                # draw bottle bottom
+                pygame.draw.polygon(self.screen,
+                                color,self.poligon_positions(pos_x,pos_y), 0)
 
             pygame.display.update()
 
