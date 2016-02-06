@@ -30,6 +30,10 @@ class BottleSimulator(threading.Thread):
 
     @property
     def index_count(self):
+        # compensates if last line is smaller
+        if (self.rows%2 == 0):
+            return self.xy_to_i(self.cols-1, self.rows-1) + 2
+
         return self.xy_to_i(self.cols-1, self.rows-1) + 1
 
     def i_to_xy(self, i):
@@ -78,10 +82,10 @@ class BottleSimulator(threading.Thread):
         if y % 2 != 0:
             pos_x += self.radius
 
-        i = self.xy_to_i(x, y)
-        self.bottles[i] = color
 
         if commit:
+            i = self.xy_to_i(x, y)
+            self.bottles[i] = color
             # draw border
             pygame.draw.circle(self.screen, self.black, (pos_x, pos_y),
                                self.radius)
