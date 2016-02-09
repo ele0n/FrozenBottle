@@ -13,7 +13,7 @@ class SerialConnection(object):
         self.cols = cols
 
         # odd lines are missing 1 bottle
-        odd = (rows - rows % 2) / 2
+        odd = rows // 2
         self.bottles = [(255, 255, 255)] * ((rows*cols)-odd)
         self.bottles_next = [(255, 255, 255)] * ((rows*cols)-odd)
 
