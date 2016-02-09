@@ -40,13 +40,13 @@ class BottleSimulator(threading.Thread):
 
         return self.xy_to_i(self.cols-1, self.rows-1) + 1
 
-    def poligon_positions(self, pos_x, pos_y):
-        pos = [[pos_x, pos_y+self.radius],
-            [pos_x+self.radius, pos_y+1.155/2*self.radius],
-            [pos_x+self.radius, pos_y-1.155/2*self.radius],
-            [pos_x, pos_y-self.radius],
-            [pos_x-self.radius, pos_y-1.155/2*self.radius],
-            [pos_x-self.radius, pos_y+1.155/2*self.radius]
+    def poligon_positions(self, pos_x, pos_y,size):
+        pos = [[pos_x, pos_y+size],
+            [pos_x+size, pos_y+1.155/2*size],
+            [pos_x+size, pos_y-1.155/2*size],
+            [pos_x, pos_y-size],
+            [pos_x-size, pos_y-1.155/2*size],
+            [pos_x-size, pos_y+1.155/2*size]
             ]
         return pos
 
@@ -108,11 +108,11 @@ class BottleSimulator(threading.Thread):
                 pygame.draw.circle(self.screen, color, (pos_x, pos_y),
                                 self.radius-border*2)
             elif self.bottle_type == "hexagon":
-                pygame.draw.polygon(self.screen, (255,0,0),
-                                self.poligon_positions(pos_x,pos_y), 3)
+                pygame.draw.polygon(self.screen, self.black,
+                                self.poligon_positions(pos_x,pos_y,self.radius), border)
                 # draw bottle bottom
                 pygame.draw.polygon(self.screen,
-                                color,self.poligon_positions(pos_x,pos_y), 0)
+                                color,self.poligon_positions(pos_x,pos_y,self.radius-border), 0)
 
             pygame.display.update()
 
